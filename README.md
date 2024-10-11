@@ -1,5 +1,10 @@
-<h1 align="center">Hi 👋, I'm Luã Muzy</h1>
-<h3 align="center">A data enthusiast focused on logistics optimization and market intelligence</h3>
+<p align="center">
+  <img src="https://github.com/luanmuzy/luanmuzy/blob/main/gitcapa%20big.jpg?raw=true" alt="Capa do GitHub" width="100%" />
+</p>
+
+
+<h3 align="center">A data and technology enthusiast</h3>
+<hr>
 
 <p align="left"> <img src="https://komarev.com/ghpvc/?username=luanmuzy&label=Profile%20views&color=0e75b6&style=flat" alt="luanmuzy" /> </p>
 
