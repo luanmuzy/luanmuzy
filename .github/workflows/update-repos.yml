@@ -1,0 +1,43 @@
+name: Atualizar Repositórios Recentes
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Executa diariamente à meia-noite
+  workflow_dispatch:      # Permite execução manual
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write    # Permissão para fazer push no repositório
+
+    steps:
+      - name: Checkout do Repositório
+        uses: actions/checkout@v4
+
+      - name: Buscar Repositórios Recentes
+        id: fetch-repos
+        run: |
+          # Busca os 15 repositórios mais recentes (excluindo forks)
+          RESPONSE=$(curl -s "https://api.github.com/users/luanmuzy/repos?sort=updated&per_page=15&type=all")
+          echo "repos=$RESPONSE" >> $GITHUB_OUTPUT
+
+      - name: Processar e Atualizar README
+        run: |
+          # Instala o jq para manipular JSON
+          sudo apt-get install -y jq
+
+          # Cria a lista de repositórios
+          echo "${{ steps.fetch-repos.outputs.repos }}" | jq -r '.[] | select(.fork == false) | "- [\(.name)](\(.html_url))"' > repos.md
+
+          # Insere no README.md
+          sed -i '/<!-- PROJECTS_START -->/,/<!-- PROJECTS_END -->/{//!d}' README.md
+          sed -i '/<!-- PROJECTS_START -->/r repos.md' README.md
+
+      - name: Commit e Push
+        run: |
+          git config --global user.name "Luan Muzy"
+          git config --global user.email "seu-email@exemplo.com"
+          git add README.md
+          git commit -m "🔄 Atualização automática de repositórios"
+          git push
