@@ -13,6 +13,7 @@
 - 🌱 I’m currently learning **advanced analytics and machine learning**
 
 ## 🚀 Recents Projects
+
 <!-- PROJECTS_START -->
 <!-- PROJECTS_END -->
 
