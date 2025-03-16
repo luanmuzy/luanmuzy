@@ -9,7 +9,7 @@ jobs:
   update-readme:
     runs-on: ubuntu-latest
     permissions:
-      contents: write    # Permissão para fazer push no repositório
+      contents: write
 
     steps:
       - name: Checkout do Repositório
@@ -18,26 +18,23 @@ jobs:
       - name: Buscar Repositórios Recentes
         id: fetch-repos
         run: |
-          # Busca os 15 repositórios mais recentes (excluindo forks)
-          RESPONSE=$(curl -s "https://api.github.com/users/luanmuzy/repos?sort=updated&per_page=15&type=all")
-          echo "repos=$RESPONSE" >> $GITHUB_OUTPUT
+          RESPONSE=$(curl -s "https://api.github.com/users/luanmuzy/repos?sort=updated&per_page=15&type=all" | jq -r '.[] | select(.fork == false) | "- [\(.name)](\(.html_url))"')
+          echo "repos<<EOF" >> $GITHUB_OUTPUT
+          echo "$RESPONSE" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
-      - name: Processar e Atualizar README
+      - name: Atualizar README
         run: |
-          # Instala o jq para manipular JSON
-          sudo apt-get install -y jq
+          # Cria a seção de projetos
+          SECTION="## 🚀 Projetos Recentes\n\n<!-- PROJECTS_START -->\n${{ steps.fetch-repos.outputs.repos }}\n<!-- PROJECTS_END -->"
 
-          # Cria a lista de repositórios
-          echo "${{ steps.fetch-repos.outputs.repos }}" | jq -r '.[] | select(.fork == false) | "- [\(.name)](\(.html_url))"' > repos.md
-
-          # Insere no README.md
-          sed -i '/<!-- PROJECTS_START -->/,/<!-- PROJECTS_END -->/{//!d}' README.md
-          sed -i '/<!-- PROJECTS_START -->/r repos.md' README.md
+          # Substitui no README.md
+          sed -i "s|## 🚀 Projetos Recentes.*<!-- PROJECTS_END -->|$SECTION|" README.md
 
       - name: Commit e Push
         run: |
           git config --global user.name "Luã Muzy"
-          git config --global user.email "luan.b.muzy@gmail.com.com"
+          git config --global user.email "luan.b.muzy@gmail.com"
           git add README.md
           git commit -m "🔄 Atualização automática de repositórios"
           git push
