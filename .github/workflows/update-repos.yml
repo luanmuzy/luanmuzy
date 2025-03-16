@@ -17,7 +17,7 @@ jobs:
       - name: Buscar Repositórios Recentes
         id: fetch-repos
         run: |
-          RESPONSE=$(curl -s "https://api.github.com/users/luanmuzy/repos?sort=updated&per_page=15&type=all" | jq -r '.[] | select(.fork == false) | "- [\(.name)](\(.html_url))"')
+          RESPONSE=$(curl -s "https://api.github.com/users/luanmuzy/repos?sort=updated&per_page=15&type=all" | jq -r '.[] | select(.fork == false and .name != "luanmuzy") | "- [\(.name)](\(.html_url))"')
           echo "repos<<EOF" >> $GITHUB_OUTPUT
           echo "$RESPONSE" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
