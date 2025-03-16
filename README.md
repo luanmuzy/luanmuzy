@@ -15,7 +15,6 @@
 ## 🚀 Recents Projects
 
 <!-- PROJECTS_START -->
-- [luanmuzy](https://github.com/luanmuzy/luanmuzy)
 - [sql-projects](https://github.com/luanmuzy/sql-projects)
 <!-- PROJECTS_END -->
 
@@ -61,6 +60,5 @@
 ## 🚀 Projetos Recentes
 
 <!-- PROJECTS_START -->
-- [luanmuzy](https://github.com/luanmuzy/luanmuzy)
 - [sql-projects](https://github.com/luanmuzy/sql-projects)
 <!-- PROJECTS_END -->
