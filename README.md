@@ -15,6 +15,8 @@
 ## 🚀 Recents Projects
 
 <!-- PROJECTS_START -->
+- [luanmuzy](https://github.com/luanmuzy/luanmuzy)
+- [sql-projects](https://github.com/luanmuzy/sql-projects)
 <!-- PROJECTS_END -->
 
 ---
@@ -55,3 +57,10 @@
 <p><img align="center" src="https://github-readme-stats.vercel.app/api?username=luanmuzy&show_icons=true&locale=en" alt="luanmuzy" /></p>
 
 <a href="https://git.io/streak-stats"><img src="https://github-readme-streak-stats.herokuapp.com?user=luanmuzy&theme=dark&hide_border=true&border_radius=15&background=45%2C030992%2C880202" alt="GitHub Streak" /></a>
+
+## 🚀 Projetos Recentes
+
+<!-- PROJECTS_START -->
+- [luanmuzy](https://github.com/luanmuzy/luanmuzy)
+- [sql-projects](https://github.com/luanmuzy/sql-projects)
+<!-- PROJECTS_END -->
