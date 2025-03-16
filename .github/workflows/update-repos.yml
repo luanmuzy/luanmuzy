@@ -1,7 +1,5 @@
 name: Atualizar Repositórios Recentes
 
-
-
 on:
   schedule:
     - cron: '0 0 * * *'  # Executa diariamente à meia-noite
@@ -12,33 +10,69 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-
     steps:
       - name: Checkout do Repositório
         uses: actions/checkout@v4
 
       - name: Buscar Repositórios Recentes
         id: fetch-repos
-        env:
-            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
         run: |
-          # Salvar o conteúdo em um arquivo temporário
-          echo -e "## 🚀 Projetos Recentes\n\n<!-- PROJECTS_START -->\n${{ steps.fetch-repos.outputs.repos }}\n<!-- PROJECTS_END -->" > section.txt
-          # Usar perl para substituição mais confiável
-          perl -i -0pe 's/## 🚀 Projetos Recentes.*?<!-- PROJECTS_END -->/$(cat section.txt)/s' README.md
+          RESPONSE=$(curl -s "https://api.github.com/users/luanmuzy/repos?sort=updated&per_page=15&type=all" | jq -r '.[] | select(.fork == false) | "- [\(.name)](\(.html_url))"')
+          echo "repos<<EOF" >> $GITHUB_OUTPUT
+          echo "$RESPONSE" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Verificar se há repositórios
+        run: |
+          echo "Repositórios encontrados:"
+          echo "${{ steps.fetch-repos.outputs.repos }}"
+
+      - name: Verificar README existente
+        run: |
+          if grep -q "## 🚀 Projetos Recentes" README.md; then
+            echo "Seção existente encontrada, será atualizada"
+          else
+            echo "Seção não encontrada, será criada"
+            echo -e "\n## 🚀 Projetos Recentes\n\n<!-- PROJECTS_START -->\n<!-- PROJECTS_END -->" >> README.md
+          fi
 
       - name: Atualizar README
         run: |
-          # Cria a seção de projetos
-          SECTION="## 🚀 Projetos Recentes\n\n<!-- PROJECTS_START -->\n${{ steps.fetch-repos.outputs.repos }}\n<!-- PROJECTS_END -->"
+          # Garantir que a substituição funcione mesmo com quebras de linha
+          REPOS="${{ steps.fetch-repos.outputs.repos }}"
+          # Usando awk para maior confiabilidade na substituição de padrões multilinhas
+          awk -v repos="$REPOS" '
+          /<!-- PROJECTS_START -->/{
+            print;
+            print repos;
+            found=1;
+            next;
+          }
+          /<!-- PROJECTS_END -->/{ 
+            if (found) found=0; 
+            print;
+            next;
+          }
+          found {next}
+          {print}
+          ' README.md > README.md.new
+          mv README.md.new README.md
 
-          # Substitui no README.md
-          sed -i "s|## 🚀 Projetos Recentes.*<!-- PROJECTS_END -->|$SECTION|" README.md
+      - name: Verificar alterações
+        id: check_changes
+        run: |
+          if git status --porcelain | grep "README.md"; then
+            echo "changes=true" >> $GITHUB_OUTPUT
+            echo "Alterações detectadas no README.md"
+          else
+            echo "changes=false" >> $GITHUB_OUTPUT
+            echo "Nenhuma alteração no README.md"
+          fi
 
       - name: Commit e Push
+        if: steps.check_changes.outputs.changes == 'true'
         run: |
-          git config --global user.name "Luan Muzy"
+          git config --global user.name "Luã Muzy"
           git config --global user.email "luan.b.muzy@gmail.com"
           git add README.md
           git commit -m "🔄 Atualização automática de repositórios"
