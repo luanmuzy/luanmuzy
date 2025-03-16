@@ -1,5 +1,7 @@
 name: Atualizar Repositórios Recentes
 
+
+
 on:
   schedule:
     - cron: '0 0 * * *'  # Executa diariamente à meia-noite
@@ -17,11 +19,13 @@ jobs:
 
       - name: Buscar Repositórios Recentes
         id: fetch-repos
+       
+
         run: |
-          RESPONSE=$(curl -s "https://api.github.com/users/luanmuzy/repos?sort=updated&per_page=15&type=all" | jq -r '.[] | select(.fork == false) | "- [\(.name)](\(.html_url))"')
-          echo "repos<<EOF" >> $GITHUB_OUTPUT
-          echo "$RESPONSE" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          # Salvar o conteúdo em um arquivo temporário
+          echo -e "## 🚀 Projetos Recentes\n\n<!-- PROJECTS_START -->\n${{ steps.fetch-repos.outputs.repos }}\n<!-- PROJECTS_END -->" > section.txt
+          # Usar perl para substituição mais confiável
+          perl -i -0pe 's/## 🚀 Projetos Recentes.*?<!-- PROJECTS_END -->/$(cat section.txt)/s' README.md
 
       - name: Atualizar README
         run: |
