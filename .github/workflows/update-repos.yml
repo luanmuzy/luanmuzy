@@ -33,7 +33,7 @@ jobs:
 
       - name: Commit e Push
         run: |
-          git config --global user.name "Luã Muzy"
+          git config --global user.name "Luan Muzy"
           git config --global user.email "luan.b.muzy@gmail.com"
           git add README.md
           git commit -m "🔄 Atualização automática de repositórios"
