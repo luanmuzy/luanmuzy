@@ -12,7 +12,7 @@
 
 - 🌱 I’m currently learning **advanced analytics and machine learning**
 
-## 🚀 Recents Projects
+## 🚀 Projects
 
 <!-- PROJECTS_START -->
 - [sql-projects](https://github.com/luanmuzy/sql-projects)
